@@ -1,4 +1,5 @@
 import { videoTrimApi } from "@/api/videoApi";
+import { handleDownload } from "@/util/filecontrol";
 import { useVideoStore } from "@/zustand/store";
 import { Button, Spin } from "antd";
 import Link from "next/link";
@@ -14,8 +15,10 @@ const VideoTrimmer = () => {
     if (videoUrl) {
       setProcessing(true);
       videoTrimApi(videoUrl.substring(1)).then((data) => {
-        setDownloadLink(data.data.file_url);
         setProcessing(false);
+        const path = data.data.file_url;
+        const fileName = path.split("filename=")[1];
+        handleDownload(`uploads/${fileName}`);
       });
     }
   };

@@ -16,3 +16,9 @@ export const videoTrimApi = (url: string) => {
   formData.append("path", url);
   return Api.put("/trim_video", formData);
 };
+
+export const videoDownloadApi = (url: string) => {
+  const formData = new FormData();
+  formData.append("path", url);
+  return Api.post("/download", formData, { responseType: "blob" });
+};
