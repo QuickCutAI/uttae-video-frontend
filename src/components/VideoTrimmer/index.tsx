@@ -1,25 +1,47 @@
-import { videoTrimApi } from "@/api/videoApi";
+import { videoDeleteApi, videoTrimApi } from "@/api/videoApi";
 import { handleDownload } from "@/util/filecontrol";
 import { useVideoStore } from "@/zustand/store";
-import { Button, Spin } from "antd";
+import { Button, Flex, Spin, UploadFile } from "antd";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const VideoTrimmer = () => {
-  const videoUrl = useVideoStore((state) => state.videoUrl);
+interface VideoTrimmerProps {
+  fileList: UploadFile[];
+  setFileList: (files: UploadFile[]) => void;
+}
+
+const VideoTrimmer = (props: VideoTrimmerProps) => {
+  const { fileList, setFileList } = props;
+
   const [processing, setProcessing] = useState<boolean>(false);
   const [downloadLink, setDownloadLink] = useState<string | null>(null);
   const downloadref = useRef<HTMLAnchorElement>(null);
 
+  const handleDelete = (fileName: string) => {
+    if (fileList && fileList[0].url) {
+      videoDeleteApi(fileList[0].url.substring(1)).then(
+        (data: { [key: string]: any }) => {
+          setFileList([]);
+        }
+      );
+
+      videoDeleteApi(fileName);
+    }
+  };
+
   const handleTrim = () => {
-    if (videoUrl) {
+    if (fileList && fileList[0].url) {
       setProcessing(true);
-      videoTrimApi(videoUrl.substring(1)).then((data) => {
-        setProcessing(false);
-        const path = data.data.file_url;
-        const fileName = path.split("filename=")[1];
-        handleDownload(`uploads/${fileName}`);
-      });
+      videoTrimApi(fileList[0].url.substring(1)).then(
+        (data: { [key: string]: any }) => {
+          setProcessing(false);
+          const path = data.data.file_url;
+          const fileName = path.split("filename=")[1];
+          handleDownload(`uploads/${fileName}`, () =>
+            handleDelete(`uploads/${fileName}`)
+          );
+        }
+      );
     }
   };
 
@@ -33,9 +55,16 @@ const VideoTrimmer = () => {
   return (
     <>
       {processing ? (
-        <Spin />
+        <Spin
+          tip={
+            <Flex vertical align="center">
+              <p>영상을 편집하고 있습니다.</p>
+              <p>잠시만 기다려 주세요.</p>
+            </Flex>
+          }
+        />
       ) : (
-        <Button onClick={handleTrim}>영상 편집 및 다운로드</Button>
+        <Button onClick={handleTrim}>Download</Button>
       )}
 
       {downloadLink && (

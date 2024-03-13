@@ -1,3 +1,4 @@
+import Description from "@/containers/Description";
 import FileTrimmer from "@/containers/FileTrimmer";
 import { Layout } from "antd";
 
@@ -9,6 +10,7 @@ const Home = () => {
       }}
     >
       <FileTrimmer />
+      <Description />
     </Layout>
   );
 };

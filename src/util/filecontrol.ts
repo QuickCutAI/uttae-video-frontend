@@ -1,6 +1,6 @@
 import { videoDownloadApi } from "@/api/videoApi";
 
-export const handleDownload = async (path: string) => {
+export const handleDownload = async (path: string, callback: () => void) => {
   try {
     const resp = await videoDownloadApi(path);
     const url = window.URL.createObjectURL(new Blob([resp.data]));
@@ -10,6 +10,7 @@ export const handleDownload = async (path: string) => {
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
+    callback();
   } catch (error) {
     console.error("다운로드 중 에러가 발생했습니다: ", error);
   }

@@ -22,3 +22,9 @@ export const videoDownloadApi = (url: string) => {
   formData.append("path", url);
   return Api.post("/download", formData, { responseType: "blob" });
 };
+
+export const videoDeleteApi = (url: string) => {
+  const formData = new FormData();
+  formData.append("path", url);
+  return Api.delete("/delete_file", { data: formData });
+};
