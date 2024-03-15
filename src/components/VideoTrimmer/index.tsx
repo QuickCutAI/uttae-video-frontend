@@ -64,7 +64,9 @@ const VideoTrimmer = (props: VideoTrimmerProps) => {
           }
         />
       ) : (
-        <Button onClick={handleTrim}>Download</Button>
+        <Button type="primary" onClick={handleTrim} size="large">
+          Download
+        </Button>
       )}
 
       {downloadLink && (

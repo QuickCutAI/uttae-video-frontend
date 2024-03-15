@@ -1,17 +1,35 @@
 import Description from "@/containers/Description";
 import FileTrimmer from "@/containers/FileTrimmer";
-import { Layout } from "antd";
+import { ConfigProvider, Layout, theme } from "antd";
+
+const { Content } = Layout;
 
 const Home = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   return (
-    <Layout
-      style={{
-        padding: 48,
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#692498",
+        },
       }}
     >
-      <FileTrimmer />
-      <Description />
-    </Layout>
+      <Layout>
+        <Content
+          style={{
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+            padding: 16,
+          }}
+        >
+          <FileTrimmer />
+          <Description />
+        </Content>
+      </Layout>
+    </ConfigProvider>
   );
 };
 
