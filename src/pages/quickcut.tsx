@@ -1,3 +1,4 @@
+import RootLayout from "@/app/layout";
 import Description from "@/containers/Description";
 import FileTrimmer from "@/containers/FileTrimmer";
 import { ConfigProvider, Layout, theme } from "antd";
