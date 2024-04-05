@@ -1,29 +1,26 @@
 import { videoDeleteApi, videoTrimApi } from "@/api/videoApi";
 import { handleDownload } from "@/util/filecontrol";
-import { useVideoStore } from "@/zustand/store";
 import { Button, Flex, Spin, UploadFile } from "antd";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 interface VideoTrimmerProps {
   fileList: UploadFile[];
   setFileList: (files: UploadFile[]) => void;
+  setDownloadDone: (param: boolean) => void;
 }
 
 const VideoTrimmer = (props: VideoTrimmerProps) => {
-  const { fileList, setFileList } = props;
+  const { fileList, setFileList, setDownloadDone } = props;
 
   const [processing, setProcessing] = useState<boolean>(false);
-  const [downloadLink, setDownloadLink] = useState<string | null>(null);
-  const downloadref = useRef<HTMLAnchorElement>(null);
 
   const handleDelete = (fileName: string) => {
     if (fileList && fileList[0].url) {
-      videoDeleteApi(fileList[0].url.substring(1)).then(
-        (data: { [key: string]: any }) => {
-          setFileList([]);
-        }
-      );
+      // videoDeleteApi(fileList[0].url.substring(1)).then(
+      //   (data: { [key: string]: any }) => {
+      //     setFileList([]);
+      //   }
+      // );
 
       videoDeleteApi(fileName);
     }
@@ -37,20 +34,14 @@ const VideoTrimmer = (props: VideoTrimmerProps) => {
           setProcessing(false);
           const path = data.data.file_url;
           const fileName = path.split("filename=")[1];
-          handleDownload(`uploads/${fileName}`, () =>
-            handleDelete(`uploads/${fileName}`)
-          );
+          handleDownload(`uploads/${fileName}`, () => {
+            handleDelete(`uploads/${fileName}`);
+            setDownloadDone(true);
+          });
         }
       );
     }
   };
-
-  useEffect(() => {
-    if (downloadLink) {
-      console.log(downloadref);
-      downloadref.current?.click();
-    }
-  }, [downloadLink]);
 
   return (
     <>
@@ -67,15 +58,6 @@ const VideoTrimmer = (props: VideoTrimmerProps) => {
         <Button type="primary" onClick={handleTrim} size="large">
           Download
         </Button>
-      )}
-
-      {downloadLink && (
-        <a
-          ref={downloadref}
-          href={downloadLink}
-          download="cutted.mp4"
-          style={{ display: "none" }}
-        />
       )}
     </>
   );

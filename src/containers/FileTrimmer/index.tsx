@@ -1,3 +1,5 @@
+import { videoDeleteApi } from "@/api/videoApi";
+import DocsLink from "@/components/DocsLink";
 import VideoTrimmer from "@/components/VideoTrimmer";
 import VideoUploader from "@/components/VideoUploader";
 import { Flex, Layout, Spin, UploadFile, Image } from "antd";
@@ -5,6 +7,7 @@ import React, { useState } from "react";
 
 const FileTrimmer = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [downloadDone, setDownloadDone] = useState<boolean>(false);
 
   return (
     <Flex style={{ padding: 20 }} vertical align="center">
@@ -12,8 +15,13 @@ const FileTrimmer = () => {
       <p>비디오에서 필요 없는 부분을 자동으로 없애 보세요!</p>
       <VideoUploader fileList={fileList} setFileList={setFileList} />
       {fileList.length > 0 && (
-        <VideoTrimmer fileList={fileList} setFileList={setFileList} />
+        <VideoTrimmer
+          fileList={fileList}
+          setFileList={setFileList}
+          setDownloadDone={setDownloadDone}
+        />
       )}
+      {downloadDone && <DocsLink />}
     </Flex>
   );
 };
