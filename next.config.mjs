@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 import "antd";
 const nextConfig = {
+  output: "export",
   reactStrictMode: true,
   transpilePackages: [
     "@ant-design",
